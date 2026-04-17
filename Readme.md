@@ -1,6 +1,8 @@
 🧢 Simulador de Estampado de Remeras (Python + PyQt6)
 
+
 Aplicación de escritorio para generar mockups de remeras con texto personalizado. Permite seleccionar tipografías visualmente, configurar el contenido y ver el resultado en tiempo real antes de exportar la imagen final.
+
 
 🚀 Características
 Renderizado en tiempo real del estampado
@@ -16,7 +18,9 @@ Librerías:
 PyQt6
 Pillow
 
+
 Instalación:
+
 
 pip install PyQt6 pillow
 📁 Estructura del proyecto
@@ -32,18 +36,25 @@ proyecto/
 │
 └── resultados/
     └── resultado.png
+
 ▶️ Uso
+
 
 Ejecutar la aplicación:
 
+
 python main.py
 Flujo:
+
+
 Escribí el texto que querés estampar
 Seleccioná el tamaño
 Elegí tipo de remera
 Seleccioná una fuente (preview en vivo)
 Visualizá el resultado en el panel derecho
 Exportá la imagen
+
+
 🧠 Notas técnicas
 Las fuentes se cargan dinámicamente desde la carpeta fuentes/
 El render del estampado usa:
@@ -52,11 +63,15 @@ Desenfoque gaussiano
 Reducción de opacidad
 La composición se realiza con Image.alpha_composite (Pillow)
 PyQt6 se utiliza para la interfaz y render en tiempo real
+
+
 ⚠️ Limitaciones actuales
 No hay posicionamiento manual del texto
 No soporta múltiples líneas complejas (alineación avanzada)
 Simulación de estampado básica (no usa displacement maps)
 Sin soporte para colores personalizados (solo blanco/negro automático)
+
+
 🛠 Posibles mejoras
 Drag & drop para posicionar texto
 Soporte multi-línea y alineación (izq/centro/der)
