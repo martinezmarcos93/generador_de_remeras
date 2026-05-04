@@ -15,11 +15,14 @@ def _font(ruta: str, tam: int, neg: bool, cur: bool):
     cands.append(ruta)
     for c in cands:
         if os.path.exists(c):
-            try: 
+            try:
                 return ImageFont.truetype(c, tam)
-            except: 
+            except (OSError, IOError):
                 pass
-    return ImageFont.truetype(ruta, tam)
+    try:
+        return ImageFont.truetype(ruta, tam)
+    except (OSError, IOError):
+        return ImageFont.load_default()
 
 def render_texto(capa, W, H, ruta_fuente, color_auto, blur, opa):
     lineas = (capa.get("texto") or "").split("\n")
@@ -96,10 +99,13 @@ def render_texto(capa, W, H, ruta_fuente, color_auto, blur, opa):
     return out
 
 def render_imagen(capa, W, H, blur, opa):
-    src = Image.open(capa["ruta"]).convert("RGBA").copy()
+    ruta = capa["ruta"]
+    if not os.path.exists(ruta):
+        raise FileNotFoundError(f"Imagen no encontrada: {ruta}")
+    src = Image.open(ruta).convert("RGBA").copy()
     nw = max(1, int(src.width * capa["escala"]))
     nh = max(1, int(src.height * capa["escala"]))
-    src = src.resize((nw, nh), Image.LANCZOS)
+    src = src.resize((nw, nh), Image.Resampling.LANCZOS)
     if capa["rotacion"]:
         src = src.rotate(-capa["rotacion"], expand=True, resample=Image.BICUBIC)
     if blur > 0:
@@ -115,7 +121,7 @@ def render_imagen(capa, W, H, blur, opa):
 
 def renderizar_todo(remera_path, capas, ruta_fuente, blur, opa, W=480, H=500):
     base = Image.open(remera_path).convert("RGBA")
-    base = base.resize((W, H), Image.LANCZOS)
+    base = base.resize((W, H), Image.Resampling.LANCZOS)
     color_auto = (0, 0, 0, 255) if "blanca" in remera_path else (255, 255, 255, 255)
     res = base.copy()
     for c in capas:

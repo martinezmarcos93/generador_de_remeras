@@ -10,9 +10,12 @@ from .models import RenderRequest, RenderResponse
 
 app = FastAPI(title="T-Shirt Mockup API")
 
+_cors_env = os.environ.get("CORS_ORIGINS", "http://localhost:5173,http://localhost:3000")
+CORS_ORIGINS = [o.strip() for o in _cors_env.split(",") if o.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -70,6 +73,12 @@ async def export(request: RenderRequest):
     """Exporta en alta resolución (300 DPI)."""
     try:
         remera_path = REMERAS.get(request.remera_path, request.remera_path)
+        if not os.path.exists(remera_path):
+            raise HTTPException(status_code=404, detail=f"Remera no encontrada: {remera_path}")
+
+        if not os.path.exists(request.fuente):
+            raise HTTPException(status_code=404, detail=f"Fuente no encontrada: {request.fuente}")
+
         # Para exportación, usamos resolución 4x
         img = renderizar_todo(
             remera_path=remera_path,

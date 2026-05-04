@@ -1,7 +1,9 @@
 # backend/app/models.py
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from typing import List, Optional, Dict, Tuple
 from enum import Enum
+
+MAX_DIMENSION = 1920
 
 class LayerType(str, Enum):
     TEXT = "texto"
@@ -52,6 +54,13 @@ class RenderRequest(BaseModel):
     opacidad: float = 1.0
     width: int = 480
     height: int = 500
+
+    @field_validator("width", "height")
+    @classmethod
+    def limitar_dimensiones(cls, v: int) -> int:
+        if v < 1 or v > MAX_DIMENSION:
+            raise ValueError(f"La dimensión debe estar entre 1 y {MAX_DIMENSION} px")
+        return v
 
 class RenderResponse(BaseModel):
     image_base64: str
