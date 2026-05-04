@@ -205,7 +205,7 @@ def render_imagen(capa: CapaImagen, W, H, blur, opa):
     src = capa.imagen_pil().copy()
     nw  = max(1, int(src.width  * capa.escala))
     nh  = max(1, int(src.height * capa.escala))
-    src = src.resize((nw,nh), Image.LANCZOS)
+    src = src.resize((nw,nh), Image.Resampling.LANCZOS)
     if capa.rotacion:
         src = src.rotate(-capa.rotacion, expand=True, resample=Image.BICUBIC)
     if blur > 0:
